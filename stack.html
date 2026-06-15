@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The AI Payments Stack: A 7-Layer Technical Breakdown — Joseph Bankole</title>
+<meta name="description" content="The full 7-layer technical breakdown of the AI Payments Stack: the architecture for autonomous money, layer by layer, and where the margin actually is.">
+<meta property="og:title" content="The AI Payments Stack: A 7-Layer Technical Breakdown">
+<meta property="og:description" content="The architecture for autonomous money, layer by layer, and where the margin actually is.">
+<meta property="og:type" content="article">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b1220; --panel:#0f1830; --ink:#e8edf6; --muted:#9aa7bd;
+    --rule:#1e2b46; --accent:#6ea8fe; --accent2:#8be0c4;
+    --maxw:720px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.65;font-size:18px;
+    background-image:radial-gradient(1200px 600px at 50% -200px, #13203d 0%, rgba(11,18,32,0) 70%);}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:64px 22px 96px}
+  .kicker{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);
+    font-weight:600;margin:0 0 18px}
+  h1{font-family:Newsreader,Georgia,serif;font-weight:600;font-size:40px;line-height:1.12;
+    letter-spacing:-.01em;margin:0 0 10px}
+  .lede-rule{width:54px;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));
+    border-radius:3px;margin:22px 0 30px}
+  h2{font-family:Newsreader,Georgia,serif;font-weight:600;font-size:25px;line-height:1.25;
+    margin:46px 0 6px;padding-top:22px;border-top:1px solid var(--rule);color:#fff}
+  p{margin:16px 0;color:#dde4f1}
+  strong{color:#fff;font-weight:600}
+  h2 + p, h1 + p{margin-top:10px}
+  hr{border:0;border-top:1px solid var(--rule);margin:48px 0 22px}
+  hr + p{color:var(--muted);font-size:15px}
+  a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(110,168,254,.35)}
+  a:hover{border-bottom-color:var(--accent)}
+  .byline{color:var(--muted);font-size:14px;margin:0 0 4px}
+  ::selection{background:rgba(110,168,254,.28)}
+  @media(max-width:560px){
+    body{font-size:17px} .wrap{padding:40px 18px 72px}
+    h1{font-size:31px} h2{font-size:22px}
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p class="kicker">Agentic Payments · Technical Breakdown</p>
+  <h1>The AI Payments Stack: A 7-Layer Technical Breakdown</h1>
+  <div class="lede-rule"></div>
+
+<p>Everyone is building better fintech dashboards. Almost nobody is building the architecture for money that moves itself.</p>
+<p>That sentence is the whole thesis. The current wave of fintech is a UI wave. Prettier ledgers, faster onboarding, cleaner reconciliation views for a human who still sits in the loop and taps &quot;approve&quot;. The interesting question is what the plumbing looks like when the human stops tapping. When an agent decides, on your behalf, to renew a SaaS contract, rebalance a treasury position, or buy the cheaper flight before the fare moves.</p>
+<p>I think about this as a stack, the way we think about the network stack, because the failure modes are layered the same way. A weakness at the identity layer poisons everything above it. A bottleneck at settlement caps everything below. Here is how I break it down, top to bottom, and where I think the money actually lands.</p>
+<h2>L7 — Application layer (the model)</h2>
+<p>This is the part everyone can see. The LLM or agent that reads your intent, weighs options, and forms the decision to spend. &quot;Find me a flight under £400 and book it.&quot; The model parses that, queries the world, and commits.</p>
+<p>Why it is hard: intent is lossy. The model has to turn fuzzy human language into a precise, bounded financial instruction, and the gap between &quot;under £400&quot; and &quot;spent £412 because the cheaper fare sold out mid-transaction&quot; is exactly where trust dies. The open problem is not capability. The models are already good enough to reason about a purchase. The open problem is bounding their discretion so a hallucinated step cannot become a real charge.</p>
+<p>Who competes here: the foundation labs, plus every agent framework sitting on top of them. This layer will commoditise fastest. When four labs can all book the flight, booking the flight is not the moat.</p>
+<p>Margin: thin, and getting thinner. Do not build your business on owning L7.</p>
+<h2>L6 — Protocol layer</h2>
+<p>For an agent to shop, merchants have to be machine-readable. Not a human checkout flow that an agent screen-scrapes and breaks on the next CSS change, but a clean, queryable surface: here is my catalogue, here is the price, here is how you commit to buy. This is the territory of the emerging universal commerce protocols, the agent-facing equivalent of what OpenAPI did for software integration.</p>
+<p>Why it is hard: it is a standards war, and standards wars are political before they are technical. Whoever defines the protocol shapes who gets discovered and on what terms. Merchants will resist anything that turns their storefront into an undifferentiated feed an agent ranks purely on price. Expect competing protocols, an awkward few years, and eventual convergence on one or two.</p>
+<p>Who competes here: the large platforms with merchant networks already in hand, payment networks that want to extend their rails, and a few open-standards efforts trying to keep it neutral.</p>
+<p>Margin: low directly, high in influence. Owning the protocol is owning the gravity. But protocols are hard to monetise without becoming the thing merchants route around.</p>
+<h2>L5 — Identity layer</h2>
+<p>Here is where it gets serious. When an agent shows up to spend, the merchant and the rails need to know one thing with certainty: is this agent genuinely acting for a real, authorised human or company, and can it prove it cryptographically? This is the home of W3C Decentralised Identifiers and signed credentials. The agent carries a verifiable proof that it is the delegate of an entity, and that proof can be checked without phoning a central authority.</p>
+<p>Why it is hard: delegation chains. A corporate treasury delegates to an agent, which spins up a sub-agent for a narrow task, which calls a tool that touches money. Every hop needs to carry provable, revocable authority, and revocation has to be instant. The day a key leaks, you need every downstream agent dead in seconds, not at the next batch sync. Most identity systems were never designed for authority that cascades and expires this fast.</p>
+<p>Who competes here: the decentralised identity community, the big cloud identity providers extending workforce identity to non-human actors, and card networks treating this as the natural extension of tokenised credentials.</p>
+<p>Margin: real, and underpriced right now. Identity is infrastructure that everything above depends on and nobody wants to build twice.</p>
+<h2>L4 — Permissioning layer</h2>
+<p>This is the brain of safety, and the layer I would bet on hardest. A policy engine that sits between intent and execution and enforces the rules: this agent may spend up to £5,000 a month, only with these vendors, only until this date, never on these categories. The mechanism a lot of this borrows from crypto is the session key. A scoped, time-boxed, revocable key that can do a narrow set of things and nothing else. Hand the agent a session key, not the keys to the vault.</p>
+<p>Why it is hard: expressing policy that is strict enough to be safe and loose enough to be useful. Too tight and the agent fails its task and the human is back to tapping approve, which defeats the point. Too loose and you have handed an autonomous process a blank chequebook. The genuinely hard part is the long tail: the vendor who is fine but bills under a different legal name, the legitimate purchase that looks anomalous, the edge case the policy author never imagined.</p>
+<p>Who competes here: this is the gap. There are crypto-native permissioning primitives and a scattering of agent-guardrail startups, but no incumbent owns enterprise-grade financial permissioning for autonomous spend. Build versus buy tips toward buy fast, because few companies want to write their own policy engine and carry the liability when it misfires.</p>
+<p>Margin: this is where a lot of it lives. More below.</p>
+<h2>L3 — Wallet and vault layer</h2>
+<p>The raw secrets. Card numbers, private keys, account credentials, balances. The single most important architectural rule on this entire stack: the LLM must never see them. The model is a probabilistic text engine exposed to untrusted input, which makes it a prompt-injection target by default. If a malicious product description can talk your agent into leaking a credential, you have lost. So the vault is a hardened, tokenised environment the agent can instruct but never read. The agent says &quot;pay token_abc123&quot;, the vault resolves the token to the real instrument and executes, and the secret never crosses into the model&#x27;s context.</p>
+<p>Why it is hard: you are building a secure enclave that an inherently manipulable component has to drive, without ever handing that component anything worth stealing. Tokenisation, isolation, and a tight instruction interface are the whole game. Get the boundary wrong once and it is a breach, not a bug.</p>
+<p>Who competes here: tokenisation providers, the secure-enclave and key-management vendors, and a handful of crypto wallet-infrastructure firms repurposing custody tech for agent spend.</p>
+<p>Margin: high, and defensible, because it is the layer everyone is most afraid to get wrong and least willing to own in-house.</p>
+<h2>L2 — PSP orchestration layer</h2>
+<p>A human picks a checkout button. A machine should pick the cheapest, most reliable route in real time. This layer is dynamic routing: given a transaction, choose the gateway or processor that clears it at the lowest cost with the best odds of success, and fail over instantly when one route degrades. At human volume, routing optimisation is a rounding error. At machine volume, with agents transacting constantly, basis points compound into real money.</p>
+<p>Why it is hard: routing intelligence needs live cost, latency, and success-rate data across processors, plus the logic to optimise against several variables at once without adding latency that wipes out the saving. It is a genuine engineering problem dressed as a config setting.</p>
+<p>Who competes here: payment orchestration platforms that already do this for human commerce and are well placed to extend into machine traffic, plus PSPs that would rather own routing than be routed around.</p>
+<p>Margin: moderate. Valuable, optimisable, but closer to a commodity than the layers around it.</p>
+<h2>L1 — Settlement layer</h2>
+<p>The actual movement of value. Two camps, and they are not really competing so much as serving different jobs. Real-time domestic rails like FedNow and RTP move fiat between bank accounts instantly and with finality, inside their networks. Stablecoin ledgers move value natively on the internet, around the clock, across borders, without caring whose banking hours it is.</p>
+<p>Why it is hard: the agentic case wants instant, final, programmable, and global all at once, and no single rail gives you all four today. FedNow and RTP are fast and final but domestic and bank-bound. Stablecoins are global and programmable but drag regulatory, custody, and counterparty questions a corporate treasurer cannot wave away. The realistic near-term answer is a blend, with an abstraction layer choosing the rail by context, which loops you straight back to L2.</p>
+<p>Who competes here: central banks and bank consortia on one side, stablecoin issuers and crypto-rail builders on the other, with a layer of firms quietly building the bridge between them.</p>
+<p>Margin: thin at the rail itself, like all utilities. The money is in the abstraction that decides which rail to use, not the rail.</p>
+<h2>Where the money actually is</h2>
+<p>Read the stack top to bottom and a pattern shows up. The visible layers commoditise. The model commoditises. The protocol becomes shared infrastructure. The rails are utilities and price like utilities. The margin pools in the boring middle, in the two layers that exist purely to make autonomy safe: permissioning (L4) and the vault (L3).</p>
+<p>My rule for it: margin accrues where friction dies. The friction that kills autonomous money is not &quot;can the agent decide&quot; or &quot;can value move&quot;. Those are close to solved. The friction is &quot;can I let this thing loose without it draining the account or leaking the keys&quot;. Whoever removes that fear, with a permissioning engine a CFO trusts and a vault a security team signs off on, gets to charge for it, because they are selling permission to sleep at night. Permission to sleep is the most defensible product in infrastructure. It is the last thing a customer rips out and the hardest thing for a rival to claim credibly.</p>
+<p>So the unglamorous layers, the ones with no consumer demo and no launch-day applause, are where the early returns sit. The flashy assistant on top is a feature. The vault and the policy engine underneath are a business.</p>
+<h2>Three hard truths for anyone building this</h2>
+<p>A few things I would not want a builder to discover the expensive way.</p>
+<p><strong>The tech is ahead of the rulebook.</strong> We can build agents that transact. What we cannot yet do is give a bank&#x27;s risk team a way to audit what an autonomous process did and why. Their entire control framework assumes a human actor they can name and hold responsible. &quot;The agent decided&quot; is not an answer that survives an audit, and until there is a real audit trail for machine decisions, compliance is the bottleneck, not capability. If you are building here, your audit and explainability story is not a feature you add later. It is the thing that gets you in the door.</p>
+<p><strong>Legacy cores cannot take the concurrency.</strong> A lot of banking still runs on batch processing. Post the day&#x27;s transactions overnight, reconcile in the morning. That model assumes traffic shaped by humans during waking hours. Agents do not keep waking hours and do not arrive in tidy batches. They transact constantly, concurrently, at machine speed, and a core built to settle once a night will choke on it. The mismatch between agent-speed demand and batch-speed infrastructure is one of the most underpriced problems in the whole field.</p>
+<p><strong>The early money is in the middleware nobody screenshots.</strong> The instinct is to build the consumer assistant, because it demos beautifully and gets the likes. The returns, at least early, go to identity, vaults, and permissioning. Unsexy, infrastructural, and exactly where the spend is, because every assistant on earth needs them and almost nobody wants to build them in-house. Sell shovels.</p>
+<h2>What to build, what to watch</h2>
+<p>If I were placing a bet today, I would build at L3 or L4, the vault or the permissioning engine, and I would treat the audit trail as a first-class product feature rather than a compliance afterthought, because that is what unlocks the bank buyer. Watch L6, the protocol war, closely but do not stake the company on winning it. Standards fights are slow and political and tend to reward patience over early commitment. Treat L1 as a routing problem, not a religion. The teams that win here will not be the ones with the slickest agent. They will be the ones a risk committee trusts with the keys.</p>
+<hr>
+<p>Written by Joseph Bankole. If this was useful, follow me on LinkedIn for daily breakdowns of the agentic payments stack.</p>
+</main>
+</body>
+</html>
